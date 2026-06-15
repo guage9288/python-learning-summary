@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python 学习总结</title>
+<style>
+  :root {
+    --primary: #306998;
+    --primary-light: #4B8BBE;
+    --accent: #FFD43B;
+    --accent-dark: #C9A227;
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #2c3e50;
+    --text-light: #6c757d;
+    --code-bg: #1e1e2e;
+    --code-text: #cdd6f4;
+    --border: #e0e4e8;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #306998 0%, #4B8BBE 50%, #306998 100%);
+    color: #fff;
+    padding: 60px 20px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0; right: 0;
+    height: 40px;
+    background: var(--bg);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .hero .logo {
+    font-size: 64px;
+    margin-bottom: 10px;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .hero h1 { font-size: 2.4em; font-weight: 700; margin-bottom: 8px; }
+  .hero p { font-size: 1.15em; opacity: 0.9; }
+
+  /* Roadmap */
+  .roadmap {
+    max-width: 900px;
+    margin: -10px auto 0;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .roadmap-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 24px;
+  }
+  .roadmap-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.82em;
+    font-weight: 600;
+    color: var(--primary);
+    white-space: nowrap;
+  }
+  .roadmap-item .num {
+    width: 28px; height: 28px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+  .roadmap-arrow {
+    color: var(--accent-dark);
+    margin: 0 10px;
+    font-size: 1.2em;
+  }
+
+  /* Main content */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--primary);
+  }
+  .section-header .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px; height: 44px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 1.3em;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-size: 1.5em;
+    color: var(--primary);
+  }
+  .section-header .tag {
+    font-size: 0.75em;
+    background: var(--accent);
+    color: var(--text);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  /* Cards grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid var(--primary-light);
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  }
+  .card h3 {
+    font-size: 1.1em;
+    margin-bottom: 12px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h3 .icon { font-size: 1.2em; }
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .card li {
+    padding: 4px 0;
+    padding-left: 18px;
+    position: relative;
+    font-size: 0.93em;
+    color: var(--text);
+  }
+  .card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* Code block */
+  .code-block {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 12px;
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+    font-size: 0.85em;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  .code-block .comment { color: #6c7086; }
+  .code-block .keyword { color: #cba6f7; }
+  .code-block .string { color: #a6e3a1; }
+  .code-block .func { color: #89b4fa; }
+  .code-block .number { color: #fab387; }
+
+  /* Summary table */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-top: 12px;
+  }
+  .summary-table th {
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.92em;
+  }
+  .summary-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9em;
+  }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table tr:hover td { background: #f0f4f8; }
+  .summary-table code {
+    background: #e8f0fe;
+    color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: "JetBrains Mono", Consolas, monospace;
+  }
+
+  /* Knowledge map */
+  .knowledge-map {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+    margin-top: 12px;
+  }
+  .map-row {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .map-node {
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+    padding: 14px 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9em;
+    position: relative;
+  }
+  .map-node.blue { background: #e8f4fd; color: #1a5276; border: 2px solid #aed6f1; }
+  .map-node.green { background: #e8f8f0; color: #1a6b47; border: 2px solid #a9dfbf; }
+  .map-node.orange { background: #fef5e7; color: #7d5a00; border: 2px solid #f9d976; }
+  .map-node.purple { background: #f0e8fd; color: #5b2c8a; border: 2px solid #d2b4f0; }
+  .map-node.red { background: #fde8ea; color: #8a1c2c; border: 2px solid #f0a6ad; }
+  .map-center {
+    background: var(--primary);
+    color: #fff;
+    font-size: 1em;
+    box-shadow: 0 4px 12px rgba(48,105,152,0.3);
+  }
+
+  /* Connector arrows */
+  .map-connector {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 1.4em;
+    margin: 4px 0;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-light);
+    font-size: 0.88em;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Back to top */
+  .back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.4em;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(48,105,152,0.4);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 100;
+  }
+  .back-to-top.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .back-to-top:hover {
+    background: #24557d;
+  }
+
+  /* Mnemonic cards */
+  .mnemonic {
+    background: linear-gradient(135deg, #fff9e6, #fff3cc);
+    border: 2px dashed #e6a817;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-top: 16px;
+    position: relative;
+  }
+  .mnemonic::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 24px;
+    width: 40px; height: 6px;
+    background: var(--accent);
+    border-radius: 0 0 4px 4px;
+  }
+  .mnemonic-title {
+    font-size: 0.85em;
+    color: #b8860b;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .mnemonic-title .icon { margin-right: 4px; }
+  .mnemonic p {
+    font-size: 0.92em;
+    color: #5a4000;
+    line-height: 1.8;
+    margin: 4px 0;
+  }
+  .mnemonic p strong {
+    color: #8b6914;
+  }
+
+  /* Interview badge */
+  .interview-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7em;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff6b35, #ff3333);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: 8px;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    box-shadow: 0 2px 8px rgba(255,51,51,0.3);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 2px 8px rgba(255,51,51,0.3); }
+    50% { box-shadow: 0 2px 16px rgba(255,51,51,0.5); }
+  }
+  .card:has(.interview-badge) {
+    border-left-color: #ff3333;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.6em; }
+    .cards { grid-template-columns: 1fr; }
+    .roadmap-bar { flex-direction: column; gap: 8px; }
+    .roadmap-arrow { transform: rotate(90deg); margin: 0; }
+    .map-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="logo">&#x1F40D;</div>
+  <h1>Python 学习总结</h1>
+  <p>核心语法 &mdash; 进阶特性 &mdash; 面向对象 &mdash; AI 项目实战</p>
+</div>
+
+<!-- Roadmap -->
+<div class="roadmap">
+  <div class="roadmap-bar">
+    <div class="roadmap-item"><span class="num">1</span> 数据存储与运算</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">2</span> 流程控制</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">3</span> 数据容器</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">4</span> 函数</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">5</span> 模块</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">6</span> 面向对象</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">7</span> 文件操作</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">8</span> 异常处理</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">9</span> 推导式与生成器</div>
+    <div class="roadmap-arrow">&rarr;</div>
+    <div class="roadmap-item"><span class="num">10</span> AI 实战</div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===================== 知识体系总览 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">&#x1F4CA;</div>
+    <h2>知识体系总览</h2>
+  </div>
+  <div class="knowledge-map">
+    <div class="map-row">
+      <div class="map-node blue">字面量与变量</div>
+      <div class="map-node blue">数据类型 (int/float/str/bool/None)</div>
+      <div class="map-node blue">输入与输出</div>
+      <div class="map-node blue">运算符</div>
+    </div>
+    <div class="map-connector">&#x25BC;</div>
+    <div class="map-row">
+      <div class="map-node green">if / elif / else</div>
+      <div class="map-node green">match...case</div>
+      <div class="map-node green">for / while 循环</div>
+      <div class="map-node green">break / continue</div>
+    </div>
+    <div class="map-connector">&#x25BC;</div>
+    <div class="map-row">
+      <div class="map-node orange">列表 list</div>
+      <div class="map-node orange">字符串 str</div>
+      <div class="map-node orange">元组 tuple</div>
+      <div class="map-node orange">集合 set</div>
+      <div class="map-node orange">字典 dict</div>
+    </div>
+    <div class="map-connector">&#x25BC;</div>
+    <div class="map-row">
+      <div class="map-node purple">函数定义与调用</div>
+      <div class="map-node purple">参数与返回值</div>
+      <div class="map-node purple">作用域 / lambda</div>
+      <div class="map-node purple">装饰器 / *args/**kwargs</div>
+    </div>
+    <div class="map-connector">&#x25BC;</div>
+    <div class="map-row">
+      <div class="map-node red">模块 / 包</div>
+      <div class="map-node red">类与对象</div>
+      <div class="map-node red">魔法方法</div>
+      <div class="map-node red">继承 / 多态 / 封装</div>
+    </div>
+    <div class="map-connector">&#x25BC;</div>
+    <div class="map-row">
+      <div class="map-node blue">文件读写 (with/open)</div>
+      <div class="map-node blue">异常处理 (try/except)</div>
+      <div class="map-node blue">推导式 / 生成器</div>
+    </div>
+    <div class="map-connector">&#x25BC;</div>
+    <div class="map-row">
+      <div class="map-center">AI 大模型应用</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 第1节 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">01</div>
+    <h2>数据存储与运算</h2>
+    <span class="tag">第2章 &middot; 第1节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F4E6;</span> 变量</h3>
+      <ul>
+        <li>存储单个数据的容器，定义格式：<code>变量名 = 值</code></li>
+        <li>Python 是动态类型语言，变量类型可变</li>
+        <li>一个变量只能存储一个值，定义时必须赋值</li>
+        <li>支持一条语句定义多个变量：<code>a, b = 1, "Python"</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x2728;</span> 标识符命名</h3>
+      <ul>
+        <li>只能包含字母、数字、下划线</li>
+        <li>不能以数字开头，不能使用关键字</li>
+        <li>严格区分大小写（age / Age / AGE 是三个变量）</li>
+        <li>PEP8 规范：蛇形命名法，全小写+下划线</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F522;</span> 数据类型</h3>
+      <table class="summary-table">
+        <tr><th>类型</th><th>说明</th><th>示例</th></tr>
+        <tr><td><code>int</code></td><td>整数</td><td>10, -5</td></tr>
+        <tr><td><code>float</code></td><td>浮点数</td><td>3.14, -3.5</td></tr>
+        <tr><td><code>str</code></td><td>字符串</td><td>"Python"</td></tr>
+        <tr><td><code>bool</code></td><td>布尔</td><td>True, False</td></tr>
+        <tr><td><code>NoneType</code></td><td>空值</td><td>None</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:0.9em;">查看类型：<code>type()</code> 和 <code>isinstance()</code></p>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4AC;</span> 字符串</h3>
+      <ul>
+        <li>三种定义：单引号、双引号、三引号</li>
+        <li>转义字符：\' &nbsp; \" &nbsp; \n &nbsp; \t</li>
+        <li>拼接：<code>+</code> 号（非字符串需 <code>str()</code> 转换）</li>
+        <li>格式化：<code>%s</code> 占位符 / <code>f"..."</code> f-string</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">print</span>(<span class="string">f"大家好, 我是{name}, 今年{age}岁"</span>)
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F504;</span> 类型转换 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li><code>int()</code>：转整数（<code>int("3")</code> &rarr; 3）</li>
+        <li><code>float()</code>：转浮点（<code>float("3.14")</code> &rarr; 3.14）</li>
+        <li><code>str()</code>：转字符串（<code>str(100)</code> &rarr; "100"）</li>
+        <li><code>bool()</code>：转布尔（0/空/None 为 False，其余为 True）</li>
+        <li><code>list()</code> / <code>tuple()</code> / <code>set()</code>：互相转换容器</li>
+      </ul>
+      <div class="code-block">
+<span class="func">int</span>(<span class="string">"123"</span>)      <span class="comment"># 123  字符串→整数</span>
+<span class="func">str</span>(<span class="number">3.14</span>)      <span class="comment"># "3.14"  浮点→字符串</span>
+<span class="func">list</span>(<span class="string">"abc"</span>)    <span class="comment"># ['a', 'b', 'c']</span>
+<span class="func">bool</span>(<span class="string">""</span>)       <span class="comment"># False（空字符串为假）</span>
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; 变量就像贴了标签的盒子</strong> &mdash; <code>name = "小明"</code> 就是把"小明"放进了一个叫 name 的盒子里。盒子可以随时换内容（动态类型），但一个盒子一次只能放一样东西。</p>
+    <p><strong>&#x1F3B5; 五大类型一句话：</strong>"整浮字布空" = int 整数、float 浮点、str 字符串、bool 布尔、None 空值。就像生活中的"金木水火土"，五种基本元素组成一切。</p>
+    <p><strong>&#x1F3B5; f-string 是字符串的"填空题"</strong> &mdash; 在引号前面加个 f，然后用 <code>{}</code> 把变量框进去，就像做完形填空一样简单。</p>
+    <p><strong>&#x1F3B5; <code>type()</code> 是"身份鉴定师"</code> &mdash; 不确定一个变量是什么类型？丢给 <code>type()</code> 看一眼就行。<code>isinstance()</code> 则是"问是非题"：它是整数吗？是/不是。</p>
+  </div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <div class="badge">02</div>
+    <h2>流程控制语句</h2>
+    <span class="tag">第2章 &middot; 第2节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F9EA;</span> 条件判断</h3>
+      <ul>
+        <li><code>if</code>：基本条件判断，结果必须是 bool 类型</li>
+        <li><code>if...else</code>：二分支，else 不需要条件</li>
+        <li><code>if...elif...else</code>：多分支，从上往下判断，前面成立后面的不再执行</li>
+        <li>注意冒号 <code>:</code> 和缩进（4个空格）</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">if</span> score >= <span class="number">85</span>:
+    <span class="keyword">print</span>(<span class="string">"优秀"</span>)
+<span class="keyword">elif</span> score >= <span class="number">60</span>:
+    <span class="keyword">print</span>(<span class="string">"及格"</span>)
+<span class="keyword">else</span>:
+    <span class="keyword">print</span>(<span class="string">"不及格"</span>)
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F3AF;</span> 模式匹配</h3>
+      <ul>
+        <li><code>match...case</code>：替代冗长的 elif 链</li>
+        <li>结构清晰，精准匹配数据的结构和内容</li>
+        <li><code>case _</code> 相当于 else 兜底</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">match</span> day:
+    <span class="keyword">case</span> <span class="number">1</span>: <span class="keyword">print</span>(<span class="string">"周一"</span>)
+    <span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">print</span>(<span class="string">"周二"</span>)
+    <span class="keyword">case</span> _: <span class="keyword">print</span>(<span class="string">"其他"</span>)
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F501;</span> 循环</h3>
+      <ul>
+        <li><code>for...in</code>：遍历序列（range / list / str / dict）</li>
+        <li><code>while</code>：条件循环，条件为 True 时持续执行</li>
+        <li><code>break</code>：终止当前循环</li>
+        <li><code>continue</code>：跳过本次，进入下一次循环</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="func">range</span>(<span class="number">1</span>, <span class="number">101</span>):
+    <span class="keyword">if</span> i % <span class="number">2</span> == <span class="number">0</span>:
+        <span class="keyword">print</span>(i)
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; if 就是"看门大爷"</strong> &mdash; 你给条件，它判断对错。对了放行，错了走 else 那条路。elif 就是多开了几扇门，从上往下依次问，问到了就不往下走了。</p>
+    <p><strong>&#x1F3B5; match-case 是"自动分拣机"</strong> &mdash; 把数据丢进去，它自己匹配到对应的格子。<code>case _</code> 就是"其余的都放这个筐里"，和 else 一个意思。</p>
+    <p><strong>&#x1F3B5; for 循环 = 点名</strong> &mdash; <code>for i in range(1, 101)</code> 就像老师从第1个点到第100个，一个不落。while 循环 = "只要条件成立就一直干"，像刷卡进门，卡有效就反复刷。</p>
+    <p><strong>&#x1F3B5; break vs continue：</strong>break = 直接翘课走人，continue = 这节课跳过，下一节继续来。</p>
+  </div>
+</div>
+
+<!-- ===================== 第3节 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">03</div>
+    <h2>数据存储容器</h2>
+    <span class="tag">第2章 &middot; 第3节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F4E6;</span> 列表 list <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>可存放不同类型元素、可重复、有序、可修改</li>
+        <li>索引：正向从 0 开始，反向从 -1 开始</li>
+        <li>切片：<code>s[start:end:step]</code>（不含 end）</li>
+        <li>方法：append / insert / remove / pop / sort / reverse</li>
+        <li>统计：min() / max() / sum() / len()</li>
+        <li>列表推导式快速生成列表</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4DD;</span> 字符串 str</h3>
+      <ul>
+        <li>不可变性（无法修改）、有序性、可迭代性</li>
+        <li>支持索引和切片操作</li>
+        <li>常用方法：find / count / upper / lower / split / strip / replace / join</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4AF;</span> 元组 tuple <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>不可变的有序容器 <code>(1, "a", 3.14)</code></li>
+        <li>支持索引和切片，但不可修改元素</li>
+        <li>适合存储不应改变的数据（如坐标、配置）</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x26AB;</span> 集合 set</h3>
+      <ul>
+        <li>无序、不重复 <code>{1, 2, 3}</code></li>
+        <li>天然去重：<code>list(set(list1))</code></li>
+        <li>运算：交集 <code>&</code> / 并集 <code>|</code> / 差集 <code>-</code></li>
+      </ul>
+    </div>
+    <div class="card" style="grid-column: 1 / -1;">
+      <h3><span class="icon">&#x1F4C2;</span> 字典 dict <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul style="columns: 2; column-gap: 30px;">
+        <li>键值对存储，键唯一 <code>{"name": "Python", "ver": 3.12}</code></li>
+        <li>增：<code>d[key] = value</code></li>
+        <li>删：<code>del d[key]</code> / <code>d.pop(key)</code></li>
+        <li>查：<code>d[key]</code> / <code>d.get(key)</code></li>
+        <li>遍历：keys() / values() / items()</li>
+        <li>字典推导式 <code>{k: v for ...}</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; 五大容器一句话：</strong>"列表能改是活的，元组不能改是死的，集合去重是秃的，字典查值是快的，字符串拼接用 + 的。"</p>
+    <p><strong>&#x1F3B5; 列表 vs 元组：</strong>列表像白板，随时能擦能写；元组像刻在石头上的字，写上去就不能改了。所以元组更安全，适合存不会变的数据（比如坐标、配置项）。</p>
+    <p><strong>&#x1F3B5; 集合 = 去重神器</strong> &mdash; 一堆重复数据丢进 <code>set()</code> 里自动去重，就像一堆人进安检门，相同的人只放一个进去。交集 <code>&</code>、并集 <code>|</code>、差集 <code>-</code> 就是集合之间的"谁和谁重叠"。</p>
+    <p><strong>&#x1F3B5; 字典 = 翻字典查字</strong> &mdash; <code>d["name"]</code> 就像翻字典找"name"这一页。<code>.get("name")</code> 更温柔，找不到就返回 None 而不报错。</p>
+    <p><strong>&#x1F3B5; 切片口诀："含头不含尾"</strong> &mdash; <code>s[1:4]</code> 取的是第 1、2、3 个元素，第 4 个不取。就像左闭右开区间 [1, 4)。</p>
+  </div>
+</div>
+
+<!-- ===================== 第4节 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">04</div>
+    <h2>函数</h2>
+    <span class="tag">第2章 &middot; 第4节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x2699;&#xFE0F;</span> 函数基础</h3>
+      <ul>
+        <li>定义：<code>def 函数名(参数列表):</code></li>
+        <li>形参（定义时）vs 实参（调用时）</li>
+        <li>返回值：<code>return</code> 可返回多个值（元组解包）</li>
+        <li>说明文档：Docstring，用 <code>help()</code> 查看</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">def</span> <span class="func">circle_area</span>(r):
+    <span class="string">"""根据半径计算圆的面积"""</span>
+    <span class="keyword">return</span> <span class="number">3.14</span> * r * r
+
+<span class="keyword">print</span>(<span class="func">circle_area</span>(<span class="number">10</span>))  <span class="comment"># 314.0</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F504;</span> 进阶特性 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>嵌套调用：函数中调用其他函数，遵循栈结构 (LIFO)</li>
+        <li>变量作用域：局部变量 vs 全局变量</li>
+        <li><code>global</code> 关键字：在函数内修改全局变量</li>
+        <li><code>nonlocal</code> 关键字：在嵌套函数中修改外层变量</li>
+        <li><code>lambda</code> 匿名函数：<code>lambda 参数: 表达式</code></li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># lambda 匿名函数</span>
+add = <span class="keyword">lambda</span> a, b: a + b
+<span class="keyword">print</span>(<span class="func">add</span>(<span class="number">3</span>, <span class="number">5</span>))  <span class="comment"># 8</span>
+
+<span class="comment"># 常用于排序 key 参数</span>
+students = [(<span class="string">"Alice"</span>, <span class="number">90</span>), (<span class="string">"Bob"</span>, <span class="number">85</span>)]
+students.<span class="func">sort</span>(key=<span class="keyword">lambda</span> x: x[<span class="number">1</span>], reverse=<span class="keyword">True</span>)
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4E6;</span> 可变参数 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li><code>*args</code>：接收任意数量的位置参数，打包为元组</li>
+        <li><code>**kwargs</code>：接收任意数量的关键字参数，打包为字典</li>
+        <li>参数顺序：普通参数 &rarr; *args &rarr; 关键字参数 &rarr; **kwargs</li>
+        <li><code>*</code> 可解包列表/元组为位置参数</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">def</span> <span class="func">total</span>(*args, **kwargs):
+    <span class="keyword">print</span>(<span class="string">f"位置参数: {args}"</span>)    <span class="comment"># (1, 2, 3)</span>
+    <span class="keyword">print</span>(<span class="string">f"关键字参数: {kwargs}"</span>)  <span class="comment"># {'tax': 0.1}</span>
+
+<span class="func">total</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, tax=<span class="number">0.1</span>)
+
+<span class="comment"># 解包调用</span>
+nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
+<span class="keyword">print</span>(<span class="func">max</span>(*nums))  <span class="comment"># 等价 max(1, 2, 3)</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F3C6;</span> 装饰器 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>本质：一个接收函数并返回函数的高阶函数</li>
+        <li>语法糖：<code>@装饰器名</code> 写在函数定义上方</li>
+        <li>执行顺序：从下到上、从外到内</li>
+        <li><code>functools.wraps</code> 保留被装饰函数的元信息</li>
+        <li>常用于：日志记录、权限校验、性能计时、缓存</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">import</span> time
+<span class="keyword">from</span> functools <span class="keyword">import</span> wraps
+
+<span class="keyword">def</span> <span class="func">timer</span>(func):
+    @wraps(func)
+    <span class="keyword">def</span> <span class="func">wrapper</span>(*args, **kwargs):
+        start = time.time()
+        result = <span class="func">func</span>(*args, **kwargs)
+        <span class="keyword">print</span>(<span class="string">f"{func.__name__} 耗时 {time.time()-start:.2f}s"</span>)
+        <span class="keyword">return</span> result
+    <span class="keyword">return</span> wrapper
+
+@timer
+<span class="keyword">def</span> <span class="func">slow_func</span>():
+    time.sleep(<span class="number">1</span>)
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; 函数 = "菜谱"</strong> &mdash; 函数是写好的菜谱，def 是菜名，参数是食材，return 是出锅的菜。你不用每次从头做，照着菜谱（调用函数）来就行。</p>
+    <p><strong>&#x1F3B5; *args / **kwargs 的区别：</strong>*args 是你随便往袋子里塞东西（位置参数，打包成元组），**kwargs 是你贴了标签往袋子里塞（关键字参数，打包成字典）。记忆法：一个星*装"散装货"，两个星**装"带标签的"。</p>
+    <p><strong>&#x1F3B5; 装饰器 = "手机壳"</strong> &mdash; 你的手机（原函数）功能不变，但套上不同的手机壳（装饰器）就有了新功能：防摔、变好看、加支架……套一层不够还能套多层，从外到里依次生效。</p>
+    <p><strong>&#x1F3B5; 作用域口诀：</strong>"内能读外，外不能读内" &mdash; 函数内部能用外面的变量，但函数外面看不到里面的。想在内部改外面的变量？用 <code>global</code>（全局）或 <code>nonlocal</code>（外层函数）。</p>
+  </div>
+</div>
+
+<!-- ===================== 第5节 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">05</div>
+    <h2>模块</h2>
+    <span class="tag">第2章 &middot; 第5节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F4E1;</span> 模块导入</h3>
+      <ul>
+        <li><code>import 模块名</code></li>
+        <li><code>from 模块名 import 功能</code></li>
+        <li><code>from 模块名 import *</code>（配合 <code>__all__</code> 控制导入范围）</li>
+        <li>每个 .py 文件就是一个模块</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4E5;</span> 软件包 package</h3>
+      <ul>
+        <li>文件夹 + <code>__init__.py</code> = 包</li>
+        <li>用于管理多个模块</li>
+        <li><code>__init__.py</code> 中用 <code>__all__</code> 控制 <code>import *</code> 的范围</li>
+        <li><code>__name__</code>：区分直接运行 vs 被导入</li>
+        <li>第三方模块：<code>pip install 模块名</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; 模块 = "工具箱"</strong> &mdash; 一个 .py 文件就是一个工具箱。<code>import math</code> 就是把整个工具箱搬过来用（<code>math.sqrt()</code>），<code>from math import sqrt</code> 是只拿出扳手来用（直接写 <code>sqrt()</code>）。</p>
+    <p><strong>&#x1F3B5; 包 = "工具箱的柜子"</strong> &mdash; 包就是一个文件夹里放了好几个工具箱（模块），<code>__init__.py</code> 是柜子的清单，告诉你柜子里有哪些工具可以用。</p>
+    <p><strong>&#x1F3B5; <code>if __name__ == "__main__"</code> 是"身份证"</strong> &mdash; 直接运行这个文件时，<code>__name__</code> 是 <code>"__main__"</code>；被别人 import 时，<code>__name__</code> 是模块名。所以这行代码的意思是：只有自己直接运行时才执行的代码。</p>
+  </div>
+</div>
+
+<!-- ===================== 第6节 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">06</div>
+    <h2>面向对象基础</h2>
+    <span class="tag">第2章 &middot; 第6节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F3DB;</span> 类与对象</h3>
+      <ul>
+        <li>类的定义：<code>class 类名:</code>（大驼峰命名）</li>
+        <li><code>__init__</code>：初始化方法，创建对象时自动调用</li>
+        <li><code>self</code>：表示当前实例对象</li>
+        <li>类外定义的叫函数，类内定义的叫方法</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">class</span> <span class="func">Car</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, brand, price):
+        self.brand = brand
+        self.price = price
+
+c1 = <span class="func">Car</span>(<span class="string">"BMW"</span>, <span class="number">500000</span>)
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x2728;</span> 魔法方法 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li><code>__init__</code>：初始化方法</li>
+        <li><code>__str__</code>：定义 print() 输出内容</li>
+        <li><code>__eq__</code>：定义 == 比较逻辑</li>
+        <li><code>__lt__ / __le__ / __gt__ / __ge__</code>：大小比较</li>
+        <li>由 Python 自动调用，无需手动执行</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4CA;</span> 属性分类</h3>
+      <ul>
+        <li><strong>实例属性</strong>：属于每个对象，各自独立</li>
+        <li><strong>类属性</strong>：属于类本身，所有对象共享</li>
+        <li>适合用类属性的场景：默认配置、共享常量</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">class</span> <span class="func">Car</span>:
+    wheel = <span class="number">4</span>       <span class="comment"># 类属性</span>
+    tax_rate = <span class="number">0.1</span>  <span class="comment"># 类属性</span>
+
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, brand):
+        self.brand = brand  <span class="comment"># 实例属性</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F333;</span> 继承 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>子类继承父类的属性和方法，实现代码复用</li>
+        <li><code>class 子类(父类):</code> 单继承</li>
+        <li><code>super().__init__()</code> 调用父类初始化方法</li>
+        <li><code>isinstance()</code> 判断对象是否为某类的实例</li>
+        <li>MRO（方法解析顺序）：子类 &rarr; 父类 &rarr; object</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">class</span> <span class="func">Animal</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, name):
+        self.name = name
+    <span class="keyword">def</span> <span class="func">speak</span>(self):
+        <span class="keyword">pass</span>
+
+<span class="keyword">class</span> <span class="func">Dog</span>(Animal):
+    <span class="keyword">def</span> <span class="func">speak</span>(self):
+        <span class="keyword">return</span> <span class="string">f"{self.name}: 汪汪!"</span>
+
+dog = <span class="func">Dog</span>(<span class="string">"旺财"</span>)
+<span class="keyword">print</span>(dog.<span class="func">speak</span>())  <span class="comment"># 旺财: 汪汪!</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F500;</span> 多态 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>不同子类对同一方法有不同实现</li>
+        <li>父类定义接口（方法签名），子类各自实现</li>
+        <li>同一方法调用，根据对象实际类型执行不同逻辑</li>
+        <li>鸭子类型：不关心对象类型，只关心有没有对应方法</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">def</span> <span class="func">animal_sound</span>(animal):
+    <span class="keyword">print</span>(animal.<span class="func">speak</span>())  <span class="comment"># 不关心类型</span>
+
+<span class="func">animal_sound</span>(<span class="func">Dog</span>(<span class="string">"旺财"</span>))    <span class="comment"># 汪汪!</span>
+<span class="func">animal_sound</span>(<span class="func">Cat</span>(<span class="string">"咪咪"</span>))    <span class="comment"># 喵喵!</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F512;</span> 封装 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li><strong>公开属性</strong>：直接访问 <code>obj.attr</code></li>
+        <li><strong>保护属性</strong>：<code>_attr</code>（约定仅内部使用，外部仍可访问）</li>
+        <li><strong>私有属性</strong>：<code>__attr</code>（名称修饰，外部无法直接访问）</li>
+        <li><code>@property</code> 装饰器：将方法变为属性访问，实现读写控制</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">class</span> <span class="func">Person</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, age):
+        self.__age = age  <span class="comment"># 私有属性</span>
+
+    @<span class="keyword">property</span>
+    <span class="keyword">def</span> <span class="func">age</span>(self):
+        <span class="keyword">return</span> self.__age
+
+    @age.<span class="func">setter</span>
+    <span class="keyword">def</span> <span class="func">age</span>(self, value):
+        <span class="keyword">if</span> value < <span class="number">0</span> <span class="keyword">or</span> value > <span class="number">150</span>:
+            <span class="keyword">raise</span> <span class="func">ValueError</span>(<span class="string">"年龄无效"</span>)
+        self.__age = value
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F6E0;</span> 类方法与静态方法</h3>
+      <ul>
+        <li><code>@classmethod</code>：第一个参数是 <code>cls</code>（类本身），常用于工厂方法</li>
+        <li><code>@staticmethod</code>：不需要 self 或 cls，类似独立函数但属于类的命名空间</li>
+        <li>实例方法 vs 类方法 vs 静态方法的选择</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">class</span> <span class="func">Date</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, year, month, day):
+        self.year, self.month, self.day = year, month, day
+
+    @<span class="keyword">classmethod</span>
+    <span class="keyword">def</span> <span class="func">from_string</span>(cls, date_str):
+        y, m, d = <span class="func">map</span>(<span class="func">int</span>, date_str.split(<span class="string">"-"</span>))
+        <span class="keyword">return</span> <span class="func">cls</span>(y, m, d)
+
+    @<span class="keyword">staticmethod</span>
+    <span class="keyword">def</span> <span class="func">is_valid</span>(y, m, d):
+        <span class="keyword">return</span> <span class="number">1</span> <= m <= <span class="number">12</span>
+
+date = Date.<span class="func">from_string</span>(<span class="string">"2024-06-15"</span>)
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; 类 = 蓝图，对象 = 房子</strong> &mdash; 类是建房子的图纸（定义了有什么房间），对象是按图纸盖出来的真房子。<code>__init__</code> 就是"施工队入场"，创建对象时自动执行。</p>
+    <p><strong>&#x1F3B5; self = "我自己"</strong> &mdash; 方法里的 self 就是"谁调用我，我就代表谁"。你叫小明调用 <code>dog.speak()</code>，self 就是那条叫小明的狗。</p>
+    <p><strong>&#x1F3B5; 继承 = "富二代"</strong> &mdash; 子类继承父类的属性和方法，不用重新写。就像富二代继承了父辈的财产（属性）和人脉（方法），自己还能创业（重写方法）加新业务（新增方法）。</p>
+    <p><strong>&#x1F3B5; 多态 = "同一个指令，不同反应"</strong> &mdash; 都是叫"说话"，猫说"喵"，狗说"汪"，鸭子说"嘎"。你不用管它是什么动物，只要它会 <code>speak()</code> 就行 &mdash; 这就是鸭子类型："如果它走起来像鸭子，叫起来像鸭子，那它就是鸭子。"</p>
+    <p><strong>&#x1F3B5; 封装 = "保险箱"</strong> &mdash; <code>__</code> 双下划线的私有属性就像锁在保险箱里的东西，外面看不到。<code>@property</code> 是保险箱的"窗口"，你想看什么通过窗口看，但不能直接伸手进去乱翻。</p>
+    <p><strong>&#x1F3B5; 类方法 vs 静态方法：</strong>类方法接收"工厂本身"（cls），可以造新对象；静态方法是个"工具人"，和类有关系但不需要访问类或对象，只是恰好住在类里面。</p>
+  </div>
+</div>
+
+<!-- ===================== 第7节 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">07</div>
+    <h2>文件操作</h2>
+    <span class="tag">第2章 &middot; 第7节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F4C2;</span> 文件读写 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li><code>open(文件路径, 模式, encoding)</code> 打开文件</li>
+        <li><code>with</code> 上下文管理器：自动关闭文件，推荐用法</li>
+        <li>模式：<code>r</code> 读 / <code>w</code> 写（覆盖） / <code>a</code> 追加 / <code>rb/wb</code> 二进制</li>
+        <li>读取：<code>read()</code> 全部 / <code>readline()</code> 逐行 / <code>readlines()</code> 行列表</li>
+        <li>写入：<code>write()</code> 写字符串 / <code>writelines()</code> 写列表</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># 读取文件</span>
+<span class="keyword">with</span> <span class="func">open</span>(<span class="string">"data.txt"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    content = f.<span class="func">read</span>()       <span class="comment"># 读全部</span>
+    lines = f.<span class="func">readlines</span>()   <span class="comment"># 读所有行</span>
+
+<span class="comment"># 写入文件</span>
+<span class="keyword">with</span> <span class="func">open</span>(<span class="string">"output.txt"</span>, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    f.<span class="func">write</span>(<span class="string">"Hello, Python!\n"</span>)
+
+<span class="comment"># 逐行遍历（内存友好）</span>
+<span class="keyword">with</span> <span class="func">open</span>(<span class="string">"data.txt"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+    <span class="keyword">for</span> line <span class="keyword">in</span> f:
+        <span class="keyword">print</span>(line.<span class="func">strip</span>())
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4BE;</span> CSV 与 JSON</h3>
+      <ul>
+        <li>CSV：<code>csv.reader()</code> 读 / <code>csv.writer()</code> 写</li>
+        <li>JSON：<code>json.load()</code> 读 / <code>json.dump()</code> 写</li>
+        <li>JSON 是 API 数据交换的通用格式</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">import</span> json, csv
+
+<span class="comment"># JSON 读写</span>
+data = {<span class="string">"name"</span>: <span class="string">"Python"</span>, <span class="string">"ver"</span>: <span class="number">3.12</span>}
+<span class="keyword">with</span> <span class="func">open</span>(<span class="string">"data.json"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> f:
+    json.<span class="func">dump</span>(data, f, ensure_ascii=<span class="keyword">False</span>, indent=<span class="number">2</span>)
+
+<span class="comment"># CSV 读取</span>
+<span class="keyword">with</span> <span class="func">open</span>(<span class="string">"scores.csv"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+    reader = csv.<span class="func">DictReader</span>(f)
+    <span class="keyword">for</span> row <span class="keyword">in</span> reader:
+        <span class="keyword">print</span>(row[<span class="string">"name"</span>], row[<span class="string">"score"</span>])
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; <code>with open()</code> = "用完自动关门"</strong> &mdash; 就像进酒店房间，<code>with</code> 就是房卡，进去之后门自动上锁，出来自动解锁。你不用操心关文件，Python 帮你搞定。</p>
+    <p><strong>&#x1F3B5; 三种模式一句话：</strong>"r 读、w 写、a 追加"。r 是翻开书看，w 是拿笔重写整页（原来的内容没了！），a 是在末尾接着写（原来的内容还在）。</p>
+    <p><strong>&#x1F3B5; 逐行读取最省内存</strong> &mdash; <code>for line in f</code> 就像吃饭一口一口吃，而不是把整桌菜一口气塞嘴里。处理大文件时，这种方式不会撑爆内存。</p>
+  </div>
+</div>
+
+<!-- ===================== 第8节 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">08</div>
+    <h2>异常处理</h2>
+    <span class="tag">第2章 &middot; 第8节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F6A8;</span> try...except</h3>
+      <ul>
+        <li><code>try</code>：可能出错的代码</li>
+        <li><code>except 异常类型 as e</code>：捕获并处理异常</li>
+        <li><code>else</code>：无异常时执行</li>
+        <li><code>finally</code>：无论是否异常都执行（资源清理）</li>
+        <li>捕获具体异常优于捕获 <code>Exception</code></li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">try</span>:
+    num = <span class="func">int</span>(<span class="func">input</span>(<span class="string">"请输入数字: "</span>))
+    result = <span class="number">100</span> / num
+<span class="keyword">except</span> <span class="func">ValueError</span>:
+    <span class="keyword">print</span>(<span class="string">"输入的不是数字"</span>)
+<span class="keyword">except</span> <span class="func">ZeroDivisionError</span>:
+    <span class="keyword">print</span>(<span class="string">"不能除以零"</span>)
+<span class="keyword">else</span>:
+    <span class="keyword">print</span>(<span class="string">f"结果: {result}"</span>)
+<span class="keyword">finally</span>:
+    <span class="keyword">print</span>(<span class="string">"程序结束"</span>)
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4A1;</span> 常见异常</h3>
+      <table class="summary-table">
+        <tr><th>异常</th><th>说明</th></tr>
+        <tr><td><code>TypeError</code></td><td>类型错误，如对 str 做数学运算</td></tr>
+        <tr><td><code>ValueError</code></td><td>值错误，如 <code>int("abc")</code></td></tr>
+        <tr><td><code>IndexError</code></td><td>索引越界</td></tr>
+        <tr><td><code>KeyError</code></td><td>字典键不存在</td></tr>
+        <tr><td><code>FileNotFoundError</code></td><td>文件不存在</td></tr>
+        <tr><td><code>ZeroDivisionError</code></td><td>除以零</td></tr>
+        <tr><td><code>AttributeError</code></td><td>对象没有该属性</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F6AB;</span> 异常抛出与自定义</h3>
+      <ul>
+        <li><code>raise 异常类型("消息")</code>：主动抛出异常</li>
+        <li>自定义异常：继承 <code>Exception</code> 类</li>
+        <li>异常链：<code>raise ... from 原异常</code></li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">class</span> <span class="func">AgeError</span>(Exception):
+    <span class="keyword">pass</span>
+
+<span class="keyword">def</span> <span class="func">set_age</span>(age):
+    <span class="keyword">if</span> age < <span class="number">0</span> <span class="keyword">or</span> age > <span class="number">150</span>:
+        <span class="keyword">raise</span> <span class="func">AgeError</span>(<span class="string">f"年龄 {age} 不合法"</span>)
+    <span class="keyword">return</span> age
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; try...except = "安全气囊"</strong> &mdash; 开车（运行代码）时不一定出事，但万一撞了（报错），安全气囊（except）能保你一命。别怕写可能出错的代码，套上 try 就有保障。</p>
+    <p><strong>&#x1F3B5; 四兄弟分工：</strong>try = "试试看"，except = "出事了我来处理"，else = "没出事我来收尾"，finally = "不管出不出事我都得干"（比如关闭文件、释放资源）。</p>
+    <p><strong>&#x1F3B5; 异常继承关系：</strong>Exception 是"万能老爹"，ValueError、TypeError、FileNotFoundError 都是它的"儿子"。捕获具体异常就像"找对人办事"，比直接找老爹效率高。</p>
+    <p><strong>&#x1F3B5; raise = "拉响警报"</strong> &mdash; 你发现数据不对，主动 raise 一个异常，就像发现火情拉响火警铃，让上面的人赶紧处理。</p>
+  </div>
+</div>
+
+<!-- ===================== 第9节 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">09</div>
+    <h2>推导式与生成器</h2>
+    <span class="tag">第2章 &middot; 第9节</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x26A1;</span> 推导式 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li><strong>列表推导式</strong>：<code>[expr for x in iterable if condition]</code></li>
+        <li><strong>字典推导式</strong>：<code>{k: v for k, v in iterable}</code></li>
+        <li><strong>集合推导式</strong>：<code>{expr for x in iterable}</code></li>
+        <li>替代 <code>map()</code> / <code>filter()</code>，更 Pythonic</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># 列表推导式</span>
+squares = [x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="func">range</span>(<span class="number">1</span>, <span class="number">11</span>)]
+even = [x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="func">range</span>(<span class="number">1</span>, <span class="number">21</span>) <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span>]
+
+<span class="comment"># 字典推导式</span>
+scores = {<span class="string">"Alice"</span>: <span class="number">90</span>, <span class="string">"Bob"</span>: <span class="number">85</span>, <span class="string">"Charlie"</span>: <span class="number">92</span>}
+passed = {k: v <span class="keyword">for</span> k, v <span class="keyword">in</span> scores.<span class="func">items</span>() <span class="keyword">if</span> v >= <span class="number">90</span>}
+<span class="comment"># {'Alice': 90, 'Charlie': 92}</span>
+
+<span class="comment"># 嵌套推导式</span>
+matrix = [[i*j <span class="keyword">for</span> j <span class="keyword">in</span> <span class="func">range</span>(<span class="number">1</span>, <span class="number">4</span>)] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="func">range</span>(<span class="number">1</span>, <span class="number">4</span>)]
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F331;</span> 生成器 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>生成器函数：用 <code>yield</code> 替代 <code>return</code></li>
+        <li>惰性求值：每次 <code>next()</code> 只产出一个值，节省内存</li>
+        <li>生成器表达式：<code>(expr for x in iterable)</code>（圆括号）</li>
+        <li>常用于：大数据流处理、无限序列、管道式处理</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># 生成器函数</span>
+<span class="keyword">def</span> <span class="func">countdown</span>(n):
+    <span class="keyword">while</span> n > <span class="number">0</span>:
+        <span class="keyword">yield</span> n
+        n -= <span class="number">1</span>
+
+<span class="keyword">for</span> num <span class="keyword">in</span> <span class="func">countdown</span>(<span class="number">5</span>):
+    <span class="keyword">print</span>(num, end=<span class="string">" "</span>)  <span class="comment"># 5 4 3 2 1</span>
+
+<span class="comment"># 生成器表达式（节省内存）</span>
+big_sum = <span class="func">sum</span>(x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="func">range</span>(<span class="number">10_000_000</span>))
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F9E9;</span> 迭代器协议 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>可迭代对象：实现了 <code>__iter__()</code> 方法的对象</li>
+        <li>迭代器：实现了 <code>__iter__()</code> 和 <code>__next__()</code></li>
+        <li><code>iter()</code> 获取迭代器，<code>next()</code> 获取下一个元素</li>
+        <li><code>StopIteration</code>：迭代结束时抛出</li>
+      </ul>
+      <div class="code-block">
+<span class="keyword">class</span> <span class="func">Countdown</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, start):
+        self.current = start
+
+    <span class="keyword">def</span> <span class="func">__iter__</span>(self):
+        <span class="keyword">return</span> self
+
+    <span class="keyword">def</span> <span class="func">__next__</span>(self):
+        <span class="keyword">if</span> self.current <= <span class="number">0</span>:
+            <span class="keyword">raise</span> <span class="func">StopIteration</span>
+        val = self.current
+        self.current -= <span class="number">1</span>
+        <span class="keyword">return</span> val
+
+<span class="keyword">for</span> n <span class="keyword">in</span> <span class="func">Countdown</span>(<span class="number">3</span>):
+    <span class="keyword">print</span>(n, end=<span class="string">" "</span>)  <span class="comment"># 3 2 1</span>
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; 推导式 = "一行搞定循环"</strong> &mdash; 普通写法要 3-4 行的 for 循环 + if 判断，推导式一行写完。就像速溶咖啡 vs 手冲咖啡：结果差不多，但推导式快得多。</p>
+    <p><strong>&#x1F3B5; 推导式三兄弟：</strong>[ ] 列表推导、{ } 字典推导、{ } 集合推导。口诀：方括号变列表，花括号看有没有冒号 &mdash; 有冒号是字典，没冒号是集合。</p>
+    <p><strong>&#x1F3B5; yield = "暂停键"</strong> &mdash; 普通函数 return 是"把菜全做好端出来"，yield 是"做一道上一道，顾客吃着我接着做"。每次 yield 暂停，下次从暂停的地方继续，所以不吃内存。</p>
+    <p><strong>&#x1F3B5; 生成器 vs 列表：</strong>列表是一次性把所有数据放进内存（自助餐全摆出来），生成器是用多少生成多少（点菜模式做一道上一道）。数据量大时用生成器，省内存。</p>
+  </div>
+</div>
+
+<!-- ===================== 第3章 AI ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">&#x1F916;</div>
+    <h2>项目实战 - AI 应用</h2>
+    <span class="tag">第3章</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F5A5;</span> 大模型部署</h3>
+      <ul>
+        <li><strong>本地部署</strong>：Ollama，数据安全、自主可控</li>
+        <li><strong>官方 API</strong>：DeepSeek 等，无需部署直接调用</li>
+        <li><strong>云服务平台</strong>：选择度高，前期成本低</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F310;</span> 网络基础</h3>
+      <ul>
+        <li><strong>IP 地址</strong>：设备的唯一身份证（IPv4/IPv6）</li>
+        <li><strong>域名</strong>：降低记忆成本，DNS 解析映射到 IP</li>
+        <li><strong>端口</strong>：0-65535，标识运行中的程序</li>
+        <li><strong>网络模型</strong>：OSI 七层 / TCP/IP 四层</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F4E9;</span> HTTP 协议</h3>
+      <ul>
+        <li>超文本传输协议，基于请求-响应模型</li>
+        <li>请求格式：请求行 + 请求头 + 请求体</li>
+        <li>响应格式：响应行 + 响应头 + 响应体</li>
+        <li>状态码：200 成功 / 400 参数错误 / 404 不存在 / 500 服务器错误</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F9E0;</span> AI 大模型 &amp; 提示词工程</h3>
+      <ul>
+        <li>LLM：用代码模拟人脑神经网络，具备语言理解与推理能力</li>
+        <li>API 调用：Apifox 测试 + Python 代码调用</li>
+        <li>Prompt Engineering：编写高质量提示词</li>
+        <li>主流模型：DeepSeek / GPT / Gemini / Qwen / Kimi</li>
+        <li>调用流程：导入 SDK &rarr; 配置 Key &rarr; 构建消息 &rarr; 发送请求 &rarr; 处理响应</li>
+      </ul>
+    </div>
+    <div class="card" style="grid-column: 1 / -1;">
+      <h3><span class="icon">&#x1F4BB;</span> Python 调用 AI API 示例</h3>
+      <div class="code-block">
+<span class="comment"># ===== 使用 OpenAI 兼容接口调用大模型 =====</span>
+<span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI
+
+client = OpenAI(
+    api_key=<span class="string">"your-api-key"</span>,
+    base_url=<span class="string">"https://api.deepseek.com/v1"</span>  <span class="comment"># 可替换为其他平台</span>
+)
+
+<span class="comment"># 基础对话</span>
+response = client.chat.completions.<span class="func">create</span>(
+    model=<span class="string">"deepseek-chat"</span>,
+    messages=[
+        {<span class="string">"role"</span>: <span class="string">"system"</span>, <span class="string">"content"</span>: <span class="string">"你是一个Python教学助手"</span>},
+        {<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"解释一下Python的装饰器"</span>}
+    ],
+    temperature=<span class="number">0.7</span>,  <span class="comment"># 控制随机性，0=确定性，1=更随机</span>
+    max_tokens=<span class="number">1024</span>
+)
+<span class="keyword">print</span>(response.choices[<span class="number">0</span>].message.content)
+
+<span class="comment"># ===== 流式输出（边生成边显示） =====</span>
+stream = client.chat.completions.<span class="func">create</span>(
+    model=<span class="string">"deepseek-chat"</span>,
+    messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"写一首关于Python的诗"</span>}],
+    stream=<span class="keyword">True</span>
+)
+<span class="keyword">for</span> chunk <span class="keyword">in</span> stream:
+    <span class="keyword">if</span> chunk.choices[<span class="number">0</span>].delta.content:
+        <span class="keyword">print</span>(chunk.choices[<span class="number">0</span>].delta.content, end=<span class="string">""</span>)
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 记忆口诀 &amp; 白话解读</div>
+    <p><strong>&#x1F3B5; 调用 AI API = "发微信问老师"</strong> &mdash; 你（客户端）发一条消息（messages），等老师（大模型）回复。messages 里 system 是"身份设定"（你是XX专家），user 是你提的问题。</p>
+    <p><strong>&#x1F3B5; temperature = "脑洞大小"</strong> &mdash; 设为 0，AI 回答最靠谱但没创意（一本正经）；设为 1，AI 回答最天马行空但可能胡说八道。写代码建议 0，写故事建议 0.7-1。</p>
+    <p><strong>&#x1F3B5; 流式输出 = "直播"</strong> &mdash; 普通模式是等 AI 全部想好才回复（录播），stream=True 是边想边说（直播）。用户体验好，不用干等。</p>
+    <p><strong>&#x1F3B5; 三种部署方式：</strong>"本地 Ollama（自己买电脑）、API 调用（租别人的电脑）、云平台（按量付费）"。小项目用 API，数据敏感用本地，量大用云平台。</p>
+  </div>
+</div>
+
+<!-- ===================== 运算符速查 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">&#x1F4CB;</div>
+    <h2>运算符速查表</h2>
+  </div>
+  <table class="summary-table">
+    <tr><th>分类</th><th>运算符</th><th>说明</th><th>示例</th></tr>
+    <tr><td>算术运算</td><td><code>+ - * / // % **</code></td><td>加减乘除、整除、取余、幂运算</td><td><code>10 // 3 = 3</code>，<code>10 % 3 = 1</code></td></tr>
+    <tr><td>比较运算</td><td><code>== != > < >= <=</code></td><td>返回布尔值 True / False</td><td><code>5 > 3</code> &rarr; True</td></tr>
+    <tr><td>逻辑运算</td><td><code>and or not</code></td><td>逻辑与、或、非</td><td><code>True and False</code> &rarr; False</td></tr>
+    <tr><td>赋值运算</td><td><code>= += -= *= /= //=</code></td><td>赋值与复合赋值</td><td><code>a += 1</code> 等价 <code>a = a + 1</code></td></tr>
+    <tr><td>成员运算</td><td><code>in not in</code></td><td>判断元素是否在容器中</td><td><code>"a" in "abc"</code> &rarr; True</td></tr>
+    <tr><td>身份运算</td><td><code>is is not</code></td><td>判断是否为同一对象</td><td><code>None is None</code> &rarr; True</td></tr>
+  </table>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 运算符口诀</div>
+    <p><strong>&#x1F3B5; 算术运算：</strong>"加减乘，地板除，取余幂" &mdash; <code>//</code> 是地板除（向下取整，10//3=3），<code>%</code> 是取余数（10%3=1），<code>**</code> 是幂运算（2**10=1024）。</p>
+    <p><strong>&#x1F3B5; == vs is：</strong><code>==</code> 比较"值相不相等"（双胞胎长得像），<code>is</code> 比较"是不是同一个人"（身份证号一样不）。判断 None 永远用 <code>is None</code>。</p>
+    <p><strong>&#x1F3B5; 短路运算：</strong><code>and</code> 遇假则停（第一个为 False 就不看第二个），<code>or</code> 遇真则停（第一个为 True 就不看第二个）。就像面试官 &mdash; 第一轮不过就不用进第二轮了。</p>
+  </div>
+</div>
+
+<!-- ===================== 常用方法速查 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">&#x1F527;</div>
+    <h2>常用方法速查表</h2>
+  </div>
+  <table class="summary-table">
+    <tr><th>容器</th><th>常用方法</th></tr>
+    <tr><td><code>list</code></td><td><code>append()</code> <code>insert()</code> <code>remove()</code> <code>pop()</code> <code>sort()</code> <code>reverse()</code></td></tr>
+    <tr><td><code>str</code></td><td><code>find()</code> <code>count()</code> <code>upper()</code> <code>lower()</code> <code>split()</code> <code>strip()</code> <code>replace()</code> <code>join()</code></td></tr>
+    <tr><td><code>dict</code></td><td><code>keys()</code> <code>values()</code> <code>items()</code> <code>get()</code> <code>pop()</code> <code>update()</code></td></tr>
+    <tr><td><code>set</code></td><td><code>add()</code> <code>remove()</code> <code>union()</code> <code>intersection()</code> <code>difference()</code></td></tr>
+    <tr><td>文件操作</td><td><code>open()</code> <code>read()</code> <code>readline()</code> <code>readlines()</code> <code>write()</code> <code>writelines()</code></td></tr>
+    <tr><td>JSON / CSV</td><td><code>json.load()</code> <code>json.dump()</code> <code>csv.reader()</code> <code>csv.writer()</code> <code>csv.DictReader()</code></td></tr>
+    <tr><td>内置函数</td><td><code>type()</code> <code>isinstance()</code> <code>len()</code> <code>min()</code> <code>max()</code> <code>sum()</code> <code>range()</code> <code>input()</code> <code>print()</code> <code>help()</code></td></tr>
+    <tr><td>迭代器</td><td><code>iter()</code> <code>next()</code> <code>enumerate()</code> <code>zip()</code> <code>map()</code> <code>filter()</code></td></tr>
+  </table>
+</div>
+
+<!-- ===================== 常见易错点 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">&#x26A0;&#xFE0F;</div>
+    <h2>常见易错点</h2>
+    <span class="tag">避坑指南</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="icon">&#x1F534;</span> 可变默认参数 <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li>函数默认参数不要用可变对象（list / dict / set）</li>
+        <li>原因：默认参数只创建一次，后续调用共享同一个对象</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># 错误写法</span>
+<span class="keyword">def</span> <span class="func">add</span>(item, lst=[]):
+    lst.<span class="func">append</span>(item)
+    <span class="keyword">return</span> lst
+
+<span class="func">add</span>(<span class="number">1</span>)  <span class="comment"># [1]</span>
+<span class="func">add</span>(<span class="number">2</span>)  <span class="comment"># [1, 2]  期望是 [2]！</span>
+
+<span class="comment"># 正确写法</span>
+<span class="keyword">def</span> <span class="func">add</span>(item, lst=<span class="keyword">None</span>):
+    <span class="keyword">if</span> lst <span class="keyword">is</span> <span class="keyword">None</span>:
+        lst = []
+    lst.<span class="func">append</span>(item)
+    <span class="keyword">return</span> lst
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F534;</span> == vs is <span class="interview-badge">&#x1F525; 面试高频</span></h3>
+      <ul>
+        <li><code>==</code> 比较值，<code>is</code> 比较内存地址（是否同一对象）</li>
+        <li>判断 None 永远用 <code>is None</code>，不要用 <code>== None</code></li>
+        <li>小整数缓存（-5 ~ 256）会导致 <code>is</code> 意外为 True</li>
+      </ul>
+      <div class="code-block">
+a = <span class="number">1000</span>
+b = <span class="number">1000</span>
+<span class="keyword">print</span>(a == b)   <span class="comment"># True  值相等</span>
+<span class="keyword">print</span>(a <span class="keyword">is</span> b)   <span class="comment"># False 不是同一对象（大整数）</span>
+
+<span class="keyword">print</span>(<span class="keyword">None</span> <span class="keyword">is</span> <span class="keyword">None</span>)  <span class="comment"># True  正确写法</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F534;</span> 循环中修改列表</h3>
+      <ul>
+        <li>遍历列表时不要同时添加/删除元素，会导致索引错乱</li>
+        <li>正确做法：遍历副本 <code>for x in lst[:]</code> 或用列表推导式生成新列表</li>
+      </ul>
+      <div class="code-block">
+<span class="comment"># 错误：边遍历边删除</span>
+nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+<span class="keyword">for</span> n <span class="keyword">in</span> nums:
+    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:
+        nums.<span class="func">remove</span>(n)  <span class="comment"># 会跳过元素！</span>
+
+<span class="comment"># 正确：用推导式生成新列表</span>
+nums = [n <span class="keyword">for</span> n <span class="keyword">in</span> nums <span class="keyword">if</span> n % <span class="number">2</span> != <span class="number">0</span>]
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="icon">&#x1F534;</span> 字符串不可变</h3>
+      <ul>
+        <li>字符串创建后不能修改，<code>s[0] = "H"</code> 会报 TypeError</li>
+        <li>"修改"字符串实际上是创建新字符串（<code>s.replace()</code> 返回新值）</li>
+        <li>大量拼接用 <code>"".join(list)</code> 而不是 <code>+=</code></li>
+      </ul>
+      <div class="code-block">
+s = <span class="string">"hello"</span>
+<span class="comment"># s[0] = "H"   # TypeError!</span>
+s = <span class="string">"H"</span> + s[<span class="number">1</span>:]  <span class="comment"># 创建新字符串 "Hello"</span>
+
+<span class="comment"># 大量拼接用 join</span>
+words = [<span class="string">"Python"</span>, <span class="string">"is"</span>, <span class="string">"awesome"</span>]
+result = <span class="string">" "</span>.<span class="func">join</span>(words)  <span class="comment"># "Python is awesome"</span>
+      </div>
+    </div>
+  </div>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 避坑口诀</div>
+    <p><strong>&#x1F3B5; 默认参数别用空列表</strong> &mdash; "默认空列表是共享的，调用多次它会膨胀。" 用 <code>None</code> 做默认值，函数内部再创建新列表。</p>
+    <p><strong>&#x1F3B5; 判断 None 用 is</strong> &mdash; "is 找本人，== 找替身" &mdash; <code>is None</code> 才是最可靠的判断方式。</p>
+    <p><strong>&#x1F3B5; 遍历不删本尊</strong> &mdash; "边走边拆桥会掉下去" &mdash; 遍历列表时不要直接删除元素，要么切片复制一份，要么用推导式。</p>
+  </div>
+</div>
+
+<!-- ===================== 常用标准库 ===================== -->
+<div class="section">
+  <div class="section-header">
+    <div class="badge">&#x1F6E0;</div>
+    <h2>常用标准库速查</h2>
+    <span class="tag">内置无需安装</span>
+  </div>
+  <table class="summary-table">
+    <tr><th>库</th><th>用途</th><th>常用示例</th></tr>
+    <tr><td><code>os</code></td><td>操作系统交互（文件路径、目录操作）</td><td><code>os.path.join()</code> <code>os.listdir()</code> <code>os.getcwd()</code></td></tr>
+    <tr><td><code>sys</code></td><td>系统相关（命令行参数、退出程序）</td><td><code>sys.argv</code> <code>sys.exit()</code></td></tr>
+    <tr><td><code>datetime</code></td><td>日期与时间处理</td><td><code>datetime.now()</code> <code>timedelta()</code> <code>strftime()</code></td></tr>
+    <tr><td><code>random</code></td><td>随机数生成</td><td><code>random.randint()</code> <code>random.choice()</code> <code>random.shuffle()</code></td></tr>
+    <tr><td><code>re</code></td><td>正则表达式匹配</td><td><code>re.search()</code> <code>re.findall()</code> <code>re.sub()</code></td></tr>
+    <tr><td><code>json</code></td><td>JSON 编解码</td><td><code>json.loads()</code> <code>json.dumps()</code> <code>json.load()</code></td></tr>
+    <tr><td><code>math</code></td><td>数学函数</td><td><code>math.sqrt()</code> <code>math.pi</code> <code>math.ceil()</code> <code>math.floor()</code></td></tr>
+    <tr><td><code>collections</code></td><td>高级数据结构</td><td><code>Counter()</code> <code>defaultdict()</code> <code>namedtuple()</code></td></tr>
+    <tr><td><code>itertools</code></td><td>迭代器工具</td><td><code>chain()</code> <code>product()</code> <code>combinations()</code></td></tr>
+    <tr><td><code>pathlib</code></td><td>面向对象的路径操作（推荐替代 os.path）</td><td><code>Path("dir/file.txt")</code> <code>.exists()</code> <code>.read_text()</code></td></tr>
+  </table>
+  <div class="mnemonic">
+    <div class="mnemonic-title"><span class="icon">&#x1F4A1;</span> 标准库记忆技巧</div>
+    <p><strong>&#x1F3B5; "os 管文件，sys 管程序，datetime 管时间，random 管运气"</strong> &mdash; 按用途记，不用死背模块名。</p>
+    <p><strong>&#x1F3B5; 遇到需求先查标准库</strong> &mdash; Python 标准库有 200+ 个模块，"Python 三万库，标准库先查查"。大部分常见需求标准库都能搞定，不用急着装第三方包。</p>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  Python 学习总结 &middot; 核心语法 + 进阶特性 + AI 应用实战 &middot; 共 10 节课程
+</div>
+
+<!-- Back to top button -->
+<button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">&#x2191;</button>
+<script>
+  window.addEventListener('scroll', function() {
+    var btn = document.querySelector('.back-to-top');
+    if (window.scrollY > 400) {
+      btn.classList.add('show');
+    } else {
+      btn.classList.remove('show');
+    }
+  });
+</script>
+
+</body>
+</html>

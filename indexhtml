@@ -31,7 +31,7 @@
   }
 
   /* Header */
-  .hero {
+  。hero {
     background: linear-gradient(135deg, #306998 0%, #4B8BBE 50%, #306998 100%);
     color: #fff;
     padding: 60px 20px 50px;
